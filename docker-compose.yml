@@ -1,0 +1,8 @@
+services:
+  iris-app:
+    container_name: iris-api
+    build: .
+    image: iris-classifier:v1.0
+    env_file: .env
+    ports: 
+      - "8000:8000"
