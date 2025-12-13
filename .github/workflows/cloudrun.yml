@@ -1,0 +1,43 @@
+name: Build and Deploy FastAPI app to Google Cloud Run
+
+on:
+    push:
+        branches: 
+            - main
+
+jobs:
+    build-and-deploy:
+        runs-on: ubuntu-latest
+        
+        steps:
+            # 1. Checkout the repo
+            - name: Checkout code
+              uses: actions/checkout@v4
+            
+            # 2. Authenticate with GCP using service account
+            - name: Authenticate with GCP
+              uses: google-github-actions/auth@v1
+              with:
+                credentials_json: ${{ secrets.GCP_SA_KEY }}
+            
+            # 3. Configure Docker to use GCR
+            - name: Configure Docker for GCR
+              run: gcloud auth configure-docker
+
+            # 4. Build and push Docker image to GCR
+            - name: Build and push Docker image
+              run: |
+                IMAGE=gcr.io/${{ secrets.GCP_PROJECT_ID }}/iris-app:v1.0
+                echo "Building image $IMAGE"
+                docker build -t $IMAGE .
+                docker push $IMAGE
+            
+            # 5. Deploy to Cloud Run
+            - name: Deploy to Cloud Run
+              run: |
+                gcloud run deploy iris-app \
+                --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/iris-app:v1.0 \
+                --platform managed \
+                --region us-central1 \
+                --allow-unauthenticated \
+                --port 8000
