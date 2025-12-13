@@ -22,7 +22,7 @@ jobs:
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          username: ${{ secrets.DOCKERHU_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       
       # 4. Build and push image
@@ -31,3 +31,13 @@ jobs:
         with:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/iris-classifier:v1.0
+      
+      # 5. Completion message
+      - name: Print completion message
+        if: success()
+        run: echo "✅ Successfully built and pushed Docker image"
+      
+      # 6. Failure message
+      - name: Print failure message
+        if: failure()
+        run: echo "❌ Failed to build and push Docker image"
