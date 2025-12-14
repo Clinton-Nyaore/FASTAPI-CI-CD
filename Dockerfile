@@ -26,7 +26,7 @@ RUN adduser --disabled-password appuser
 USER appuser
 
 # Coppy Dependencies from builder
-COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+COPY --from=builder /usr/local /usr/local
 
 # Cop application files 
 COPY main.py .
