@@ -7,7 +7,7 @@ on:
 
 env:
   SERVICE_NAME: fastapi-iris-app
-  REGION: ${{ secrets.GCP_REGION }}
+  REGION: us-central1
   REPOSITORY: fastapi-repo
 
 jobs:
