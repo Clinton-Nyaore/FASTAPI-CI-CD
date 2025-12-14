@@ -63,6 +63,14 @@ jobs:
                 --image ${{ env.REGION }}-docker.pkg.dev/\
                 ${{ secrets.GCP_PROJECT_ID }}/\
                 ${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:latest\
-                --platform managed \
                 --region ${{ secrets.GCP_REGION }} \
                 --allow-unauthenticated
+            
+            # Print failure message
+            - name: Failed to Complete all Steps
+              if: failure()
+              run: echo "❌ Failed to complete all steps"
+            
+            # Print success message
+            - name: The processes were successful
+              run: echo "✅ Successfully built and deployed to Cloud Run"
