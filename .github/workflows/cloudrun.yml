@@ -39,8 +39,7 @@ jobs:
             # 5. Build Docker image
             - name: Build Docker image
               run: |
-                $IMAGE_NAME="${{ env.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:latest"
-                echo "Building image: $IMAGE_NAME"
+                IMAGE_NAME="${{ env.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:latest"
                 docker build -t "$IMAGE_NAME" .
             
             # 6. Push Docker Image Artifact Registry
