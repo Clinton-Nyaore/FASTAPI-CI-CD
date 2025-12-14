@@ -36,14 +36,14 @@ COPY models/ models/
 # Environment Variable
 ENV PYTHONUNBUFFERED=1
 
-# # Expose port 8000
-# EXPOSE 8000
+# Expose port 8080
+EXPOSE 8080
 # Cloud Run listens on $PORT (default 8080)
 
 # Default CMD executed when container starts
 # Cloud Run listens on $PORT. Shell form allows variable expansion.
-CMD ["gunicorn", "main:app", \
-     "--worker-class", "uvicorn.workers.UvicornWorker", \
-     "--workers", "2", \
-     "--bind", "0.0.0.0:${PORT:-8080}", \
-     "--timeout", "120"]
+CMD exec gunicorn main:app \
+    --worker-class uvicorn.workers.UvicornWorker \
+    --workers 2 \
+    --bind 0.0.0.0:${PORT} \
+    --timeout 120
