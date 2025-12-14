@@ -9,6 +9,7 @@ env:
   SERVICE_NAME: fastapi-iris-app
   REGION: us-central1
   REPOSITORY: fastapi-repo
+  IMAGE_URI: us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/fastapi-repo/fastapi-iris-app:latest
 
 jobs:
     build-and-deploy:
@@ -39,22 +40,19 @@ jobs:
             # 5. Build Docker image
             - name: Build Docker image
               run: |
-                IMAGE_NAME="${{ env.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:latest"
-                docker build -t "$IMAGE_NAME" .
+                docker build -t ${{ env.IMAGE_URI }} .
             
             # 6. Push Docker Image Artifact Registry
             - name: Push Docker image to AR
               run: |
-                IMAGE="${{ env.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:latest"
-                docker push "$IMAGE"
+                docker push ${{ env.IMAGE_URI }}
             
             # 7. Deploy to Cloud Run
             - name: Deploy to Cloud Run
               run: |
                 gcloud run deploy ${{ env.SERVICE_NAME }} \
-                --image "${{ env.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:latest" \
+                --image ${{ env.IMAGE_URI }} \
                 --region ${{ env.REGION }} \
-                --platform managed \
                 --allow-unauthenticated
             
             # Print failure message

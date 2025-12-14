@@ -36,8 +36,13 @@ COPY models/ models/
 # Environment Variable
 ENV PYTHONUNBUFFERED=1
 
-# Expose port 8000
-EXPOSE 8000
+# # Expose port 8000
+# EXPOSE 8000
+# Cloud Run listens on $PORT (default 8080)
 
 # Default CMD executed when container starts
-CMD ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD exec gunicorn main:app \
+  --worker-class uvicorn.workers.UvicornWorker \
+  --workers 2 \
+  --bind 0.0.0.0:${PORT} \
+  --timeout 120
