@@ -39,20 +39,21 @@ jobs:
             # 5. Build Docker image
             - name: Build Docker image
               run: |
-                $IMAGE_NAME=${{ env.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:latest
-                docker build -t $IMAGE_NAME .
+                $IMAGE_NAME="${{ env.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:latest"
+                echo "Building image: $IMAGE_NAME"
+                docker build -t "$IMAGE_NAME" .
             
             # 6. Push Docker Image Artifact Registry
             - name: Push Docker image to AR
               run: |
-                IMAGE=${{ env.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:latest
-                docker push $IMAGE
+                IMAGE="${{ env.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:latest"
+                docker push "$IMAGE"
             
             # 7. Deploy to Cloud Run
             - name: Deploy to Cloud Run
               run: |
                 gcloud run deploy ${{ env.SERVICE_NAME }} \
-                --image ${{ env.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:latest \
+                --image "${{ env.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:latest" \
                 --region ${{ env.REGION }} \
                 --platform managed \
                 --allow-unauthenticated
