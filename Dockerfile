@@ -41,8 +41,9 @@ ENV PYTHONUNBUFFERED=1
 # Cloud Run listens on $PORT (default 8080)
 
 # Default CMD executed when container starts
-CMD exec gunicorn main:app \
-  --worker-class uvicorn.workers.UvicornWorker \
-  --workers 2 \
-  --bind 0.0.0.0:${PORT} \
-  --timeout 120
+# Cloud Run listens on $PORT. Shell form allows variable expansion.
+CMD ["gunicorn", "main:app", \
+     "--worker-class", "uvicorn.workers.UvicornWorker", \
+     "--workers", "2", \
+     "--bind", "0.0.0.0:${PORT:-8080}", \
+     "--timeout", "120"]
