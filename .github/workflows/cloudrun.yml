@@ -54,6 +54,7 @@ jobs:
                 --image ${{ env.IMAGE_URI }} \
                 --region ${{ env.REGION }} \
                 --allow-unauthenticated
+                --set-env-vars mysecret=${{ secrets.API_KEY }}
             
             # Print failure message
             - name: Failed to Complete all Steps
